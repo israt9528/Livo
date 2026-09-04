@@ -1,9 +1,12 @@
-import express, { Application, Request, Response } from "express";
+import express, { Application, NextFunction, Request, Response } from "express";
 import cookieParser from "cookie-parser";
+import httpStatus from "http-status";
 import cors from "cors";
 import config from "./app/config";
 import { globalRateLimiter } from "./app/middleware/reteLimiter";
 import { globalErrorHandler } from "./app/middleware/globalErrorHandler";
+import { authRoutes } from "./app/modules/auth/auth.route";
+import { AppError } from "./app/utils/AppError";
 
 const app: Application = express();
 
@@ -33,13 +36,16 @@ app.get("/api/v1/health", (_req: Request, res: Response) => {
   });
 });
 
+app.use("/api/v1/auth", authRoutes);
+
 // Fallback 404 Route
-app.use((req: Request, res: Response) => {
-  res.status(404).json({
-    success: false,
-    message: `Cannot find route ${req.originalUrl} on this server`,
-    errors: [],
-  });
+app.use((req: Request, _res: Response, next: NextFunction) => {
+  next(
+    new AppError(
+      httpStatus.NOT_FOUND,
+      `Cannot find route ${req.originalUrl} on this server`,
+    ),
+  );
 });
 
 app.use(globalErrorHandler);
