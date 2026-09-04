@@ -20,6 +20,6 @@ package-lock.json
 pnpm-workspace.yaml
 .vscode
 
-.agent
+.agents
 .claude
 .windsurf

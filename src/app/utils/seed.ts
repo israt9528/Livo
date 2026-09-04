@@ -2,8 +2,8 @@ import bcrypt from "bcryptjs";
 import httpStatus from "http-status";
 import config from "../config";
 import { prisma } from "../lib/prisma";
-import { AppError } from "./appError";
 import { UserRole, UserStatus } from "../../generated/prisma/enums";
+import { AppError } from "./AppError";
 
 export const seedAdmin = async () => {
   try {

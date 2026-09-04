@@ -2,6 +2,8 @@ import express, { Application, Request, Response } from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import config from "./app/config";
+import { globalRateLimiter } from "./app/middleware/reteLimiter";
+import { globalErrorHandler } from "./app/middleware/globalErrorHandler";
 
 const app: Application = express();
 
@@ -12,6 +14,7 @@ app.use(
     credentials: true,
   }),
 );
+app.use(globalRateLimiter);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -38,5 +41,7 @@ app.use((req: Request, res: Response) => {
     errors: [],
   });
 });
+
+app.use(globalErrorHandler);
 
 export default app;
