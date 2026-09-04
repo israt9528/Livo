@@ -1,0 +1,27 @@
+model Room {
+  id                   String     @id @default(uuid())
+  unitId               String
+  roomNumber           String
+  rentAmount           Decimal    @db.Decimal(10, 2)
+  depositAmount        Decimal    @db.Decimal(10, 2)
+  maxOccupancy         Int        @default(1)
+  features             String[]
+  dimensions           String?
+  status               RoomStatus @default(AVAILABLE)
+  reservationExpiresAt DateTime?
+  
+  deletedAt            DateTime?
+  createdAt            DateTime   @default(now())
+  updatedAt            DateTime   @updatedAt
+
+  unit            Unit             @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  viewingRequests ViewingRequest[]
+  applications    Application[]
+  leases          Lease[]
+
+  @@unique([unitId, roomNumber])
+  @@index([unitId])
+  @@index([status])
+  @@index([deletedAt])
+  @@map("rooms")
+}

@@ -1,0 +1,24 @@
+model Application {
+  id                     String            @id @default(uuid())
+  tenantId               String
+  roomId                 String
+  status                 ApplicationStatus @default(PENDING)
+  moveInDate             DateTime
+  intendedDurationMonths Int
+  incomeVerificationUrl  String?
+  rejectionReason        String?
+  
+  deletedAt              DateTime?
+  createdAt              DateTime          @default(now())
+  updatedAt              DateTime          @updatedAt
+
+  tenant              User                 @relation("TenantApplications", fields: [tenantId], references: [id], onDelete: Cascade)
+  room                Room                 @relation(fields: [roomId], references: [id], onDelete: Restrict)
+  paymentTransactions PaymentTransaction[]
+
+  @@index([tenantId])
+  @@index([roomId])
+  @@index([status])
+  @@index([deletedAt])
+  @@map("applications")
+}

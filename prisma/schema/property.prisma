@@ -1,0 +1,23 @@
+model Property {
+  id           String       @id @default(uuid())
+  ownerId      String
+  title        String
+  description  String       @db.Text
+  address      String
+  city         String
+  zipCode      String
+  propertyType PropertyType @default(APARTMENT_BUILDING)
+  images       String[]
+  
+  deletedAt    DateTime?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  owner User   @relation("OwnerProperties", fields: [ownerId], references: [id], onDelete: Restrict)
+  units Unit[]
+
+  @@index([ownerId])
+  @@index([city])
+  @@index([deletedAt])
+  @@map("properties")
+}

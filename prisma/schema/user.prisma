@@ -1,0 +1,31 @@
+model User {
+  id               String      @id @default(uuid())
+  email            String      @unique
+  passwordHash     String
+  refreshTokenHash String?
+  name             String
+  phoneNumber      String?
+  avatarUrl        String?
+  bio              String?
+  role             UserRole    @default(TENANT)
+  status           UserStatus  @default(ACTIVE)
+  
+  deletedAt        DateTime?
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  // Relations
+  preference          RoommatePreference?
+  ownedProperties     Property[]           @relation("OwnerProperties")
+  viewingRequests     ViewingRequest[]     @relation("TenantViewings")
+  applications        Application[]        @relation("TenantApplications")
+  leases              Lease[]              @relation("TenantLeases")
+  billSplits          BillSplit[]          @relation("TenantBillSplits")
+  payments            PaymentTransaction[] @relation("UserPayments")
+  auditLogs           AuditLog[]           @relation("UserAuditLogs")
+
+  @@index([email])
+  @@index([role, status])
+  @@index([deletedAt])
+  @@map("users")
+}

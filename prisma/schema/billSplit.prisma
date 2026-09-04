@@ -1,0 +1,21 @@
+model BillSplit {
+  id            String      @id @default(uuid())
+  utilityBillId String
+  tenantId      String
+  amount        Decimal     @db.Decimal(10, 2)
+  status        SplitStatus @default(UNPAID)
+  paidAt        DateTime?
+  
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  utilityBill         UtilityBill          @relation(fields: [utilityBillId], references: [id], onDelete: Cascade)
+  tenant              User                 @relation("TenantBillSplits", fields: [tenantId], references: [id], onDelete: Restrict)
+  paymentTransactions PaymentTransaction[]
+
+  @@unique([utilityBillId, tenantId])
+  @@index([utilityBillId])
+  @@index([tenantId])
+  @@index([status])
+  @@map("bill_splits")
+}

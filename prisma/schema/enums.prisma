@@ -1,0 +1,88 @@
+enum UserRole {
+  TENANT
+  OWNER
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  DEACTIVATED
+}
+
+enum SleepSchedule {
+  EARLY_BIRD
+  NIGHT_OWL
+  FLEXIBLE
+}
+
+enum PropertyType {
+  APARTMENT_BUILDING
+  HOUSE
+  SHARED_CONDO
+}
+
+enum RoomStatus {
+  AVAILABLE
+  RESERVED
+  OCCUPIED
+  MAINTENANCE
+}
+
+enum ViewingStatus {
+  PENDING
+  CONFIRMED
+  REJECTED
+  CANCELLED
+}
+
+enum ApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+  COMPLETED
+}
+
+enum LeaseStatus {
+  ACTIVE
+  TERMINATED
+  EXPIRED
+}
+
+enum UtilityType {
+  ELECTRICITY
+  WATER
+  GAS
+  INTERNET
+}
+
+enum BillStatus {
+  PENDING
+  PARTIALLY_PAID
+  SETTLED
+}
+
+enum SplitStatus {
+  UNPAID
+  PAID
+}
+
+enum PaymentGateway {
+  STRIPE
+  BKASH
+  SSLCOMMERZ
+}
+
+enum PaymentCategory {
+  SECURITY_DEPOSIT
+  MONTHLY_RENT
+  UTILITY_SPLIT
+}
+
+enum PaymentStatus {
+  INITIATED
+  SUCCESS
+  FAILED
+  CANCELLED
+}

@@ -1,0 +1,19 @@
+model AuditLog {
+  id         String   @id @default(uuid())
+  userId     String?
+  action     String   // E.g., "USER_SUSPENDED", "OCCUPANCY_CHANGED", "LEASE_TERMINATED"
+  resource   String   // Target table name: "users", "rooms", "leases"
+  resourceId String
+  oldValue   Json?
+  newValue   Json?
+  ipAddress  String?
+  createdAt  DateTime @default(now())
+
+  user User? @relation("UserAuditLogs", fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([resource, resourceId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("audit_logs")
+}

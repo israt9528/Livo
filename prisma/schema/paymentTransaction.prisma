@@ -1,0 +1,30 @@
+model PaymentTransaction {
+  id                   String          @id @default(uuid())
+  userId               String
+  applicationId        String?
+  leaseId              String?
+  billSplitId          String?
+  gateway              PaymentGateway  @default(STRIPE)
+  transactionId        String          @unique // Gateway session ID or reference
+  gatewayTransactionId String?         // Provider charge ID (e.g., ch_xxx or bKash trxID)
+  amount               Decimal         @db.Decimal(10, 2)
+  currency             String          @default("USD")
+  category             PaymentCategory
+  status               PaymentStatus   @default(INITIATED)
+  idempotencyKey       String          @unique
+  metadata             Json?
+  
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+
+  user        User         @relation("UserPayments", fields: [userId], references: [id], onDelete: Restrict)
+  application Application? @relation(fields: [applicationId], references: [id], onDelete: SetNull)
+  lease       Lease?       @relation(fields: [leaseId], references: [id], onDelete: SetNull)
+  billSplit   BillSplit?   @relation(fields: [billSplitId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([transactionId])
+  @@index([idempotencyKey])
+  @@index([status])
+  @@map("payment_transactions")
+}

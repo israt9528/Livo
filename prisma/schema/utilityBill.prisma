@@ -1,0 +1,21 @@
+model UtilityBill {
+  id           String      @id @default(uuid())
+  unitId       String
+  billType     UtilityType
+  totalAmount  Decimal     @db.Decimal(10, 2)
+  billingMonth String      // E.g., "2026-09"
+  dueDate      DateTime
+  status       BillStatus  @default(PENDING)
+  invoiceUrl   String?
+  
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  unit   Unit        @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  splits BillSplit[]
+
+  @@unique([unitId, billType, billingMonth])
+  @@index([unitId])
+  @@index([status])
+  @@map("utility_bills")
+}

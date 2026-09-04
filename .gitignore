@@ -1,0 +1,25 @@
+node_modules/
+dist/
+.env
+*.log
+npm-debug.log*
+.DS_Store
+/generated/prisma
+node_modules
+.env
+.env.*
+!.env.example
+dist
+
+/src/generated
+
+# Lock Files
+pnpm-lock.yaml
+yarn.lock
+package-lock.json
+pnpm-workspace.yaml
+.vscode
+
+.agent
+.claude
+.windsurf
