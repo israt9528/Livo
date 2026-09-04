@@ -23,6 +23,9 @@ const envSchema = z.object({
 	PAYMENT_GATEWAY: z.enum(["STRIPE", "BKASH", "SSLCOMMERZ"]).default("STRIPE"),
 	STRIPE_SECRET_KEY: z.string().default("sk_test_placeholder"),
 	STRIPE_WEBHOOK_SECRET: z.string().default("whsec_placeholder"),
+	CLOUDINARY_CLOUD_NAME: z.string().default("demo"),
+	CLOUDINARY_API_KEY: z.string().default("123456789012345"),
+	CLOUDINARY_API_SECRET: z.string().default("placeholder_secret"),
 });
 
 const parseEnv = () => {

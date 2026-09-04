@@ -22,6 +22,7 @@
     "@prisma/client": "^7.10.0",
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.3",
+    "cloudinary": "^2.11.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
@@ -29,6 +30,7 @@
     "express-rate-limit": "^8.7.0",
     "http-status": "^2.1.0",
     "jsonwebtoken": "^9.0.3",
+    "multer": "^2.3.0",
     "pg": "^8.23.0",
     "zod": "^4.5.4"
   },
@@ -39,6 +41,7 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
+    "@types/multer": "^2.2.0",
     "@types/node": "^26.4.1",
     "@types/pg": "^8.23.1",
     "prisma": "^7.10.0",

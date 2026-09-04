@@ -15,6 +15,9 @@ import { AppError } from "./app/utils/AppError";
 import { userRoutes } from "./app/modules/user/user.route";
 import { roommateRoutes } from "./app/modules/roommate/roommate.route";
 import { propertyRoutes } from "./app/modules/property/property.route";
+import { unitRoutes } from "./app/modules/unit/unit.route";
+import { roomRoutes } from "./app/modules/room/room.route";
+import { mediaRoutes } from "./app/modules/media/media.route";
 
 const app: Application = express();
 
@@ -48,6 +51,9 @@ app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/roommate", roommateRoutes);
 app.use("/api/v1/properties", propertyRoutes);
+app.use("/api/v1/units", unitRoutes);
+app.use("/api/v1/rooms", roomRoutes);
+app.use("/api/v1/media", mediaRoutes);
 
 // Fallback 404 Route
 app.use((req: Request, _res: Response, next: NextFunction) => {
