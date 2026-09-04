@@ -1,7 +1,7 @@
-import jwt, { SignOptions } from "jsonwebtoken";
+import jwt, { type SignOptions } from "jsonwebtoken";
 import { env } from "../config/env.js";
 import { AppError } from "./AppError.js";
-import { UserRole, UserStatus } from "../../generated/prisma/enums.js";
+import type { UserRole, UserStatus } from "../../generated/prisma/enums.js";
 
 export interface TokenPayload {
   userId: string;

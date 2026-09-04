@@ -1,8 +1,8 @@
-import { Request, Response, NextFunction } from "express";
+import type { Request, Response, NextFunction } from "express";
 import { verifyAccessToken } from "../utils/jwt.js";
 import { AppError } from "../utils/AppError.js";
 import { catchAsync } from "../utils/catchAsync.js";
-import { UserRole, UserStatus } from "../../generated/prisma/client.js";
+import { type UserRole, UserStatus } from "../../generated/prisma/client.js";
 import { prisma } from "../lib/prisma.js";
 
 export const auth = (...requiredRoles: UserRole[]) => {
