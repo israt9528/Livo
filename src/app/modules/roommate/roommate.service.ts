@@ -6,12 +6,12 @@ import {
   UserStatus,
 } from "../../../generated/prisma/client";
 import { AppError } from "../../utils/AppError.js";
-import {
+import type {
   UpsertPreferenceInput,
   RoommateMatchQueryInput,
 } from "./roommate.validation.js";
 import { prisma } from "../../lib/prisma";
-import { MatchResult, PreferenceRecord } from "./roommate.interface";
+import type { MatchResult, PreferenceRecord } from "./roommate.interface";
 
 /**
  * [✨ UNIQUE IMPLEMENTATION / VALUE-ADD]

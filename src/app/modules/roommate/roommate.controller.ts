@@ -1,10 +1,10 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 import httpStatus from "http-status";
 import { catchAsync } from "../../utils/catchAsync.js";
 import { sendResponse } from "../../utils/sendResponse.js";
 import { AppError } from "../../utils/AppError.js";
 import { RoommateService } from "./roommate.service.js";
-import { RoommateMatchQueryInput } from "./roommate.validation.js";
+import type { RoommateMatchQueryInput } from "./roommate.validation.js";
 
 const upsertPreference = catchAsync(async (req: Request, res: Response) => {
   if (!req.user?.userId) {

@@ -1,7 +1,7 @@
 import httpStatus from "http-status";
 import { UserStatus } from "../../../generated/prisma/client";
 import { AppError } from "../../utils/AppError.js";
-import { UpdateProfileInput } from "./user.validation.js";
+import type { UpdateProfileInput } from "./user.validation.js";
 import { prisma } from "../../lib/prisma";
 
 const getMe = async (userId: string) => {

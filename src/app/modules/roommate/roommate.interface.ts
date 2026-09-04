@@ -1,4 +1,4 @@
-import { Prisma, SleepSchedule } from "../../../generated/prisma/client";
+import type { Prisma, SleepSchedule } from "../../../generated/prisma/client";
 
 export interface PreferenceRecord {
   id: string;
