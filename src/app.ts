@@ -13,6 +13,7 @@ import { globalErrorHandler } from "./app/middleware/globalErrorHandler";
 import { authRoutes } from "./app/modules/auth/auth.route";
 import { AppError } from "./app/utils/AppError";
 import { userRoutes } from "./app/modules/user/user.route";
+import { roommateRoutes } from "./app/modules/roommate/roommate.route";
 
 const app: Application = express();
 
@@ -44,6 +45,7 @@ app.get("/api/v1/health", (_req: Request, res: Response) => {
 
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/roommate", roommateRoutes);
 
 // Fallback 404 Route
 app.use((req: Request, _res: Response, next: NextFunction) => {
