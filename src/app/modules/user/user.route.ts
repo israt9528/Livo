@@ -11,10 +11,10 @@ router.get("/me", auth(), UserController.getMe);
 
 // Update authenticated user profile
 router.patch(
-  "/me",
-  auth(),
-  validateRequest(updateProfileSchema),
-  UserController.updateMe,
+	"/me",
+	auth(),
+	validateRequest(updateProfileSchema),
+	UserController.updateMe,
 );
 
 export const userRoutes = router;

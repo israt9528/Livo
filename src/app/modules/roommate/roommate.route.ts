@@ -9,16 +9,16 @@ const router = Router();
 
 // Roommate Matchmaking endpoints (Restricted strictly to TENANT)
 router.put(
-  "/roommate-preference",
-  auth(UserRole.TENANT),
-  validateRequest(upsertPreferenceSchema),
-  RoommateController.upsertPreference,
+	"/roommate-preference",
+	auth(UserRole.TENANT),
+	validateRequest(upsertPreferenceSchema),
+	RoommateController.upsertPreference,
 );
 
 router.get(
-  "/roommate-matches",
-  auth(UserRole.TENANT),
-  RoommateController.getMatches,
+	"/roommate-matches",
+	auth(UserRole.TENANT),
+	RoommateController.getMatches,
 );
 
 export const roommateRoutes = router;
