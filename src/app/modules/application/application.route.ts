@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { ApplicationController } from "./application.controller.js";
 import {
-  createApplicationSchema,
-  updateApplicationStatusSchema,
+	createApplicationSchema,
+	updateApplicationStatusSchema,
 } from "./application.validation.js";
 import { UserRole } from "../../lib/prisma.js";
 import { auth } from "../../middleware/auth.js";
@@ -12,10 +12,10 @@ const router = Router();
 
 // Tenant submits application
 router.post(
-  "/",
-  auth(UserRole.TENANT),
-  validateRequest(createApplicationSchema),
-  ApplicationController.createApplication,
+	"/",
+	auth(UserRole.TENANT),
+	validateRequest(createApplicationSchema),
+	ApplicationController.createApplication,
 );
 
 // All authenticated roles can list their relevant applications
@@ -26,10 +26,10 @@ router.get("/:id", auth(), ApplicationController.getApplicationById);
 
 // Status transition (Owner approves/rejects, Tenant cancels)
 router.patch(
-  "/:id/status",
-  auth(),
-  validateRequest(updateApplicationStatusSchema),
-  ApplicationController.updateApplicationStatus,
+	"/:id/status",
+	auth(),
+	validateRequest(updateApplicationStatusSchema),
+	ApplicationController.updateApplicationStatus,
 );
 
 export const applicationRoutes = router;
