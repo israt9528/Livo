@@ -4,10 +4,21 @@ import { PaginationUtils } from "../../utils/pagination.js";
 import { SearchUtils } from "../../utils/searchFilter.js";
 import {
   AdminUserQueryInput,
+  AuditLogQueryInput,
   UpdateUserRoleInput,
   UpdateUserStatusInput,
 } from "./admin.validation.js";
-import { prisma, UserStatus } from "../../lib/prisma.js";
+import {
+  ApplicationStatus,
+  LeaseStatus,
+  PaymentCategory,
+  PaymentStatus,
+  prisma,
+  RoomStatus,
+  UserRole,
+  UserStatus,
+  ViewingStatus,
+} from "../../lib/prisma.js";
 
 const getUsers = async (query: AdminUserQueryInput) => {
   const { page, limit, skip, take, sortBy, sortOrder } =
@@ -170,9 +181,194 @@ const updateUserRole = async (
 
   return updatedUser;
 };
+const getPlatformOverviewAnalytics = async () => {
+  const [
+    userStats,
+    roomStats,
+    propertyCount,
+    unitCount,
+    activeLeasesCount,
+    pendingApplicationsCount,
+    pendingViewingsCount,
+    revenueAggregates,
+    revenueByCategory,
+  ] = await Promise.all([
+    // 1. User counts grouped by role
+    prisma.user.groupBy({
+      by: ["role"],
+      _count: { _all: true },
+    }),
+
+    // 2. Room counts grouped by inventory status
+    prisma.room.groupBy({
+      by: ["status"],
+      _count: { _all: true },
+    }),
+
+    // 3. Total property count
+    prisma.property.count(),
+
+    // 4. Total unit count
+    prisma.unit.count(),
+
+    // 5. Active lease count
+    prisma.lease.count({
+      where: { status: LeaseStatus.ACTIVE },
+    }),
+
+    // 6. Pending tenant applications
+    prisma.application.count({
+      where: { status: ApplicationStatus.PENDING },
+    }),
+
+    // 7. Pending tour viewing requests
+    prisma.viewingRequest.count({
+      where: { status: ViewingStatus.PENDING },
+    }),
+
+    // 8. Total gross volume settled
+    prisma.paymentTransaction.aggregate({
+      where: { status: PaymentStatus.SUCCESS },
+      _sum: { amount: true },
+      _count: { _all: true },
+    }),
+
+    // 9. Volume settled grouped by payment category
+    prisma.paymentTransaction.groupBy({
+      by: ["category"],
+      where: { status: PaymentStatus.SUCCESS },
+      _sum: { amount: true },
+      _count: { _all: true },
+    }),
+  ]);
+
+  // Transform User Stats
+  const usersByRole = {
+    tenants:
+      userStats.find((u) => u.role === UserRole.TENANT)?._count._all ?? 0,
+    owners: userStats.find((u) => u.role === UserRole.OWNER)?._count._all ?? 0,
+    admins: userStats.find((u) => u.role === UserRole.ADMIN)?._count._all ?? 0,
+    total: userStats.reduce((acc, curr) => acc + curr._count._all, 0),
+  };
+
+  // Transform Room & Occupancy Stats
+  const totalRooms = roomStats.reduce((acc, curr) => acc + curr._count._all, 0);
+  const occupiedRooms =
+    roomStats.find((r) => r.status === RoomStatus.OCCUPIED)?._count._all ?? 0;
+  const reservedRooms =
+    roomStats.find((r) => r.status === RoomStatus.RESERVED)?._count._all ?? 0;
+  const availableRooms =
+    roomStats.find((r) => r.status === RoomStatus.AVAILABLE)?._count._all ?? 0;
+  const maintenanceRooms =
+    roomStats.find((r) => r.status === RoomStatus.MAINTENANCE)?._count._all ??
+    0;
+
+  const occupancyRate =
+    totalRooms > 0
+      ? Number(((occupiedRooms / totalRooms) * 100).toFixed(2))
+      : 0;
+
+  // Transform Financial Breakdown
+  const financialSummary = {
+    grossVolume: Number(revenueAggregates._sum.amount ?? 0),
+    successfulTransactionsCount: revenueAggregates._count._all,
+    byCategory: {
+      monthlyRent: Number(
+        revenueByCategory.find(
+          (c) => c.category === PaymentCategory.MONTHLY_RENT,
+        )?._sum.amount ?? 0,
+      ),
+      securityDeposit: Number(
+        revenueByCategory.find(
+          (c) => c.category === PaymentCategory.SECURITY_DEPOSIT,
+        )?._sum.amount ?? 0,
+      ),
+      utilitySplit: Number(
+        revenueByCategory.find(
+          (c) => c.category === PaymentCategory.UTILITY_SPLIT,
+        )?._sum.amount ?? 0,
+      ),
+    },
+  };
+
+  return {
+    overview: {
+      generatedAt: new Date().toISOString(),
+      occupancyRatePercent: occupancyRate,
+    },
+    users: usersByRole,
+    inventory: {
+      properties: propertyCount,
+      units: unitCount,
+      rooms: {
+        total: totalRooms,
+        available: availableRooms,
+        reserved: reservedRooms,
+        occupied: occupiedRooms,
+        maintenance: maintenanceRooms,
+      },
+    },
+    operations: {
+      activeLeases: activeLeasesCount,
+      pendingApplications: pendingApplicationsCount,
+      pendingViewingRequests: pendingViewingsCount,
+    },
+    financials: financialSummary,
+  };
+};
+
+/**
+ * Filterable, paginated audit trail explorer
+ */
+const getAuditLogs = async (query: AuditLogQueryInput) => {
+  const { page, limit, skip, take, sortBy, sortOrder } =
+    PaginationUtils.calculatePagination(query, "createdAt");
+
+  const whereClause: Record<string, unknown> = {
+    ...(query.action && {
+      action: { contains: query.action, mode: "insensitive" },
+    }),
+    ...(query.resource && {
+      resource: { equals: query.resource, mode: "insensitive" },
+    }),
+    ...(query.userId && { userId: query.userId }),
+    ...((query.startDate || query.endDate) && {
+      createdAt: {
+        ...(query.startDate && { gte: new Date(query.startDate) }),
+        ...(query.endDate && { lte: new Date(query.endDate) }),
+      },
+    }),
+  };
+
+  const [total, logs] = await Promise.all([
+    prisma.auditLog.count({ where: whereClause }),
+    prisma.auditLog.findMany({
+      where: whereClause,
+      skip,
+      take,
+      orderBy: { [sortBy]: sortOrder },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            role: true,
+          },
+        },
+      },
+    }),
+  ]);
+
+  const meta = PaginationUtils.formatPaginationMeta(total, page, limit);
+
+  return { meta, logs };
+};
 
 export const AdminService = {
   getUsers,
   updateUserStatus,
   updateUserRole,
+  getPlatformOverviewAnalytics,
+  getAuditLogs,
 };

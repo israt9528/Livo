@@ -4,7 +4,7 @@ import { catchAsync } from "../../utils/catchAsync.js";
 import { sendResponse } from "../../utils/sendResponse.js";
 import { AppError } from "../../utils/AppError.js";
 import { AdminService } from "./admin.service.js";
-import { AdminUserQueryInput } from "./admin.validation.js";
+import { AdminUserQueryInput, AuditLogQueryInput } from "./admin.validation.js";
 
 const getUsers = catchAsync(async (req: Request, res: Response) => {
   const query = req.query as unknown as AdminUserQueryInput;
@@ -81,9 +81,35 @@ const updateUserRole = catchAsync(async (req: Request, res: Response) => {
     data: updatedUser,
   });
 });
+const getPlatformOverviewAnalytics = catchAsync(
+  async (_req: Request, res: Response) => {
+    const analytics = await AdminService.getPlatformOverviewAnalytics();
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Platform overview analytics aggregated successfully",
+      data: analytics,
+    });
+  },
+);
+
+const getAuditLogs = catchAsync(async (req: Request, res: Response) => {
+  const query = req.query as unknown as AuditLogQueryInput;
+  const result = await AdminService.getAuditLogs(query);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Audit logs retrieved successfully",
+    data: result,
+  });
+});
 
 export const AdminController = {
   getUsers,
   updateUserStatus,
   updateUserRole,
+  getPlatformOverviewAnalytics,
+  getAuditLogs,
 };
