@@ -24,6 +24,7 @@ import { leaseRoutes } from "./app/modules/lease/lease.route";
 import { utilityRoutes } from "./app/modules/utility/utility.route";
 import { paymentRoutes } from "./app/modules/payment/payment.route";
 import { PaymentController } from "./app/modules/payment/payment.controller";
+import { adminRoutes } from "./app/modules/admin/admin.route";
 
 const app: Application = express();
 
@@ -72,6 +73,7 @@ app.use("/api/v1/applications", applicationRoutes);
 app.use("/api/v1/leases", leaseRoutes);
 app.use("/api/v1/utilities", utilityRoutes);
 app.use("/api/v1/payments", paymentRoutes);
+app.use("/api/v1/admin", adminRoutes);
 
 // Fallback 404 Route
 app.use((req: Request, _res: Response, next: NextFunction) => {
