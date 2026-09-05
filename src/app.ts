@@ -21,6 +21,7 @@ import { mediaRoutes } from "./app/modules/media/media.route";
 import { viewingRoutes } from "./app/modules/viewing/viewing.route";
 import { applicationRoutes } from "./app/modules/application/application.route";
 import { leaseRoutes } from "./app/modules/lease/lease.route";
+import { utilityRoutes } from "./app/modules/utility/utility.route";
 
 const app: Application = express();
 
@@ -60,6 +61,7 @@ app.use("/api/v1/media", mediaRoutes);
 app.use("/api/v1/viewing-requests", viewingRoutes);
 app.use("/api/v1/applications", applicationRoutes);
 app.use("/api/v1/leases", leaseRoutes);
+app.use("/api/v1/utilities", utilityRoutes);
 
 // Fallback 404 Route
 app.use((req: Request, _res: Response, next: NextFunction) => {
