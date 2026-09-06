@@ -1,9 +1,9 @@
 import { v2 as cloudinary } from "cloudinary";
 import config from "../config";
 
-import dotenv from "dotenv";
+// import dotenv from "dotenv";
 
-dotenv.config();
+// dotenv.config();
 
 cloudinary.config({
   cloud_name: config.cloudinary_cloud_name?.trim(),
