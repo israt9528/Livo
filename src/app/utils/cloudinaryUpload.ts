@@ -8,15 +8,6 @@ export const uploadBufferToCloudinary = (
   folder: string,
 ): Promise<string> => {
   return new Promise((resolve, reject) => {
-    console.log("Cloudinary Config Loaded:", {
-      cloud_name: cloudinary.config().cloud_name,
-      api_key: cloudinary.config().api_key
-        ? "EXISTS (Starts with " +
-          String(cloudinary.config().api_key).slice(0, 4) +
-          "...)"
-        : "MISSING",
-      api_secret: cloudinary.config().api_secret ? "EXISTS" : "MISSING",
-    });
     const uploadStream = cloudinary.uploader.upload_stream(
       {
         folder: `housing-platform/${folder}`,
@@ -24,10 +15,6 @@ export const uploadBufferToCloudinary = (
       },
       (error, result) => {
         if (error || !result) {
-          console.error(
-            "RAW CLOUDINARY ERROR:",
-            JSON.stringify(error, null, 2),
-          );
           return reject(
             new AppError(
               httpStatus.BAD_GATEWAY,
@@ -51,4 +38,42 @@ export const uploadMultipleBuffersToCloudinary = async (
     uploadBufferToCloudinary(file.buffer, folder),
   );
   return Promise.all(uploadPromises);
+};
+
+/**
+ * Extracts public_id from Cloudinary CDN URL
+ * E.g. https://res.cloudinary.com/.../upload/v123456/housing-platform/avatars/abc.jpg
+ * Returns: "housing-platform/avatars/abc"
+ */
+export const extractCloudinaryPublicId = (url: string): string | null => {
+  try {
+    if (!url || !url.includes("cloudinary.com")) return null;
+    const parts = url.split(/\/upload\/(?:v\d+\/)?/);
+    if (parts.length < 2) return null;
+    const pathWithExt = parts[1];
+    const lastDotIndex = pathWithExt.lastIndexOf(".");
+    return lastDotIndex !== -1
+      ? pathWithExt.substring(0, lastDotIndex)
+      : pathWithExt;
+  } catch {
+    return null;
+  }
+};
+
+/**
+ * Removes an image asset from Cloudinary storage
+ */
+export const deleteFromCloudinary = async (url: string): Promise<void> => {
+  const publicId = extractCloudinaryPublicId(url);
+  if (!publicId) return;
+
+  try {
+    await cloudinary.uploader.destroy(publicId);
+  } catch (error) {
+    // Non-blocking error so an orphaned asset cleanup does not fail the primary upload flow
+    console.error(
+      `Failed to delete asset [${publicId}] from Cloudinary:`,
+      error,
+    );
+  }
 };
