@@ -1,12 +1,13 @@
 model Unit {
-  id         String   @id @default(uuid())
-  propertyId String
-  unitNumber String
-  floor      Int
+  id           String        @id @default(uuid())
+  propertyId   String
+  unitNumber   String
+  floor        Int
+  images       String[]      @default([]) // Added
   
-  deletedAt  DateTime?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  deletedAt    DateTime?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 
   property     Property      @relation(fields: [propertyId], references: [id], onDelete: Cascade)
   rooms        Room[]
