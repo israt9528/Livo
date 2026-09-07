@@ -47,8 +47,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+app.get("/", (_req: Request, res: Response) => {
+  res.status(200).json({
+    success: true,
+    message: "Housing & Roommate Management System server is running",
+  });
+});
+
 // Standardized Health Check Endpoint
-app.get("/api/v1/health", (_req: Request, res: Response) => {
+app.get("/api/v1/heath", (_req: Request, res: Response) => {
   res.status(200).json({
     success: true,
     message: "Housing & Roommate Management System API is healthy",
