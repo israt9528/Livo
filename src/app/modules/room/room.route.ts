@@ -14,25 +14,25 @@ router.get("/:id", RoomController.getRoomById);
 
 // Owner & Admin endpoints
 router.post(
-  "/",
-  auth(UserRole.OWNER, UserRole.ADMIN),
-  validateRequest(createRoomSchema),
-  RoomController.createRoom,
+	"/",
+	auth(UserRole.OWNER, UserRole.ADMIN),
+	validateRequest(createRoomSchema),
+	RoomController.createRoom,
 );
 
 router.patch(
-  "/:id",
-  auth(UserRole.OWNER, UserRole.ADMIN),
-  validateRequest(updateRoomSchema),
-  RoomController.updateRoom,
+	"/:id",
+	auth(UserRole.OWNER, UserRole.ADMIN),
+	validateRequest(updateRoomSchema),
+	RoomController.updateRoom,
 );
 
 // Upload images via Postman multipart form-data
 router.patch(
-  "/:id/images",
-  auth(UserRole.OWNER, UserRole.ADMIN),
-  uploadMultipleImages,
-  RoomController.uploadImages,
+	"/:id/images",
+	auth(UserRole.OWNER, UserRole.ADMIN),
+	uploadMultipleImages,
+	RoomController.uploadImages,
 );
 
 export const roomRoutes = router;

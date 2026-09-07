@@ -2,6 +2,6 @@ import Stripe from "stripe";
 import { env } from "../config/env";
 
 export const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
-  apiVersion: "2025-02-24.acacia" as Stripe.LatestApiVersion,
-  typescript: true,
+	apiVersion: "2025-02-24.acacia" as Stripe.LatestApiVersion,
+	typescript: true,
 });

@@ -1,8 +1,8 @@
 import express, {
-  type Application,
-  type NextFunction,
-  type Request,
-  type Response,
+	type Application,
+	type NextFunction,
+	type Request,
+	type Response,
 } from "express";
 import cookieParser from "cookie-parser";
 import httpStatus from "http-status";
@@ -28,18 +28,20 @@ import { adminRoutes } from "./app/modules/admin/admin.route";
 
 const app: Application = express();
 
+app.set("trust proxy", 1);
+
 // Base Middleware
 app.use(
-  cors({
-    origin: config.client_url,
-    credentials: true,
-  }),
+	cors({
+		origin: config.client_url,
+		credentials: true,
+	}),
 );
 
 app.post(
-  "/api/v1/payments/webhook",
-  express.raw({ type: "application/json" }),
-  PaymentController.handleWebhook,
+	"/api/v1/payments/webhook",
+	express.raw({ type: "application/json" }),
+	PaymentController.handleWebhook,
 );
 
 app.use(globalRateLimiter);
@@ -48,24 +50,24 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.get("/", (_req: Request, res: Response) => {
-  res.status(200).json({
-    success: true,
-    message: "Housing & Roommate Management System server is running",
-  });
+	res.status(200).json({
+		success: true,
+		message: "Housing & Roommate Management System server is running",
+	});
 });
 
 // Standardized Health Check Endpoint
 app.get("/api/v1/heath", (_req: Request, res: Response) => {
-  res.status(200).json({
-    success: true,
-    message: "Housing & Roommate Management System API is healthy",
-    data: {
-      status: "UP",
-      uptime: process.uptime(),
-      timestamp: new Date().toISOString(),
-      environment: process.env.NODE_ENV ?? "development",
-    },
-  });
+	res.status(200).json({
+		success: true,
+		message: "Housing & Roommate Management System API is healthy",
+		data: {
+			status: "UP",
+			uptime: process.uptime(),
+			timestamp: new Date().toISOString(),
+			environment: process.env.NODE_ENV ?? "development",
+		},
+	});
 });
 
 app.use("/api/v1/auth", authRoutes);
@@ -84,12 +86,12 @@ app.use("/api/v1/admin", adminRoutes);
 
 // Fallback 404 Route
 app.use((req: Request, _res: Response, next: NextFunction) => {
-  next(
-    new AppError(
-      httpStatus.NOT_FOUND,
-      `Cannot find route ${req.originalUrl} on this server`,
-    ),
-  );
+	next(
+		new AppError(
+			httpStatus.NOT_FOUND,
+			`Cannot find route ${req.originalUrl} on this server`,
+		),
+	);
 });
 
 app.use(globalErrorHandler);

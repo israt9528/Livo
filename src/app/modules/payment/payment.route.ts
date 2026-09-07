@@ -9,10 +9,10 @@ const router = Router();
 
 // Tenant creates a checkout session
 router.post(
-  "/create-checkout-session",
-  auth(UserRole.TENANT),
-  validateRequest(createCheckoutSessionSchema),
-  PaymentController.createCheckoutSession,
+	"/create-checkout-session",
+	auth(UserRole.TENANT),
+	validateRequest(createCheckoutSessionSchema),
+	PaymentController.createCheckoutSession,
 );
 
 // Dev Simulator endpoint: Settle payment and trigger status updates
@@ -20,9 +20,9 @@ router.post("/simulate-success/:id", auth(), PaymentController.simulateSuccess);
 
 // Tenant retrieves their transaction history
 router.get(
-  "/my-transactions",
-  auth(UserRole.TENANT),
-  PaymentController.getMyTransactions,
+	"/my-transactions",
+	auth(UserRole.TENANT),
+	PaymentController.getMyTransactions,
 );
 
 // Payer, Owner, or Admin retrieves a transaction receipt

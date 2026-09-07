@@ -12,18 +12,18 @@ router.get("/me", auth(), UserController.getMe);
 
 // Update user profile fields (name, bio, phoneNumber)
 router.patch(
-  "/me",
-  auth(),
-  validateRequest(updateProfileSchema),
-  UserController.updateMe,
+	"/me",
+	auth(),
+	validateRequest(updateProfileSchema),
+	UserController.updateMe,
 );
 
 // Upload or replace user avatar image
 router.patch(
-  "/me/avatar",
-  auth(),
-  uploadSingleImage,
-  UserController.uploadAvatar,
+	"/me/avatar",
+	auth(),
+	uploadSingleImage,
+	UserController.uploadAvatar,
 );
 
 export const userRoutes = router;

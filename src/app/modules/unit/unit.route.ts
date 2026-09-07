@@ -13,18 +13,18 @@ router.get("/", UnitController.getAllUnits);
 
 // Create Unit (JSON body with optional images array)
 router.post(
-  "/",
-  auth(UserRole.OWNER, UserRole.ADMIN),
-  validateRequest(createUnitSchema),
-  UnitController.createUnit,
+	"/",
+	auth(UserRole.OWNER, UserRole.ADMIN),
+	validateRequest(createUnitSchema),
+	UnitController.createUnit,
 );
 
 // Upload images via Postman multipart form-data
 router.patch(
-  "/:id/images",
-  auth(UserRole.OWNER, UserRole.ADMIN),
-  uploadMultipleImages,
-  UnitController.uploadImages,
+	"/:id/images",
+	auth(UserRole.OWNER, UserRole.ADMIN),
+	uploadMultipleImages,
+	UnitController.uploadImages,
 );
 
 export const unitRoutes = router;

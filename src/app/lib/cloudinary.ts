@@ -6,10 +6,10 @@ import config from "../config";
 // dotenv.config();
 
 cloudinary.config({
-  cloud_name: config.cloudinary_cloud_name?.trim(),
-  api_key: config.cloudinary_api_key?.trim(),
-  api_secret: config.cloudinary_api_secret?.trim(),
-  secure: true,
+	cloud_name: config.cloudinary_cloud_name?.trim(),
+	api_key: config.cloudinary_api_key?.trim(),
+	api_secret: config.cloudinary_api_secret?.trim(),
+	secure: true,
 });
 
 export { cloudinary };
