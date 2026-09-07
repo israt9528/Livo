@@ -28,7 +28,7 @@ import { adminRoutes } from "./app/modules/admin/admin.route";
 
 const app: Application = express();
 
-app.set("trust proxy", 1);
+// app.set("trust proxy", 1);
 
 // Base Middleware
 app.use(
