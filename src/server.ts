@@ -1,3 +1,7 @@
+import dns from "node:dns";
+// Force Node to resolve IPv4 addresses first (fixes Render ENETUNREACH on port 587)
+dns.setDefaultResultOrder("ipv4first");
+
 import app from "./app";
 import config from "./app/config";
 import { transporter } from "./app/lib/nodemailer";
@@ -14,9 +18,17 @@ const main = async () => {
 
     await redisClient.connect();
 
-    await transporter.verify();
-    console.log("Nodemailer Connected Successfully.");
-
+    try {
+      if (transporter) {
+        await transporter.verify();
+        console.log("📧 [Nodemailer] SMTP Server is ready");
+      }
+    } catch (mailError) {
+      console.warn(
+        "⚠️ [Nodemailer] SMTP failed to connect, continuing anyway:",
+        mailError,
+      );
+    }
     await seedAdmin();
 
     app.listen(PORT, "0.0.0.0", () => {
