@@ -1,35 +1,23 @@
-// import nodemailer from "nodemailer";
-// // import dotenv from "dotenv";
-// import config from "../config";
-
-// // dotenv.config();
-
-// // const smtpPort = Number(config.smtp_port) || 587;
-
-// export const transporter = nodemailer.createTransport({
-//   host: config.smtp_host || "smtp.gmail.com",
-//   port: Number(config.smtp_port) || 465,
-//   secure: false, // true for 465, false for 587
-//   auth: {
-//     user: config.smtp_user,
-//     pass: config.smtp_pass,
-//   },
-//   tls: {
-//     rejectUnauthorized: false, // Prevents TLS handshake timeouts
-//   },
-//   connectionTimeout: 10000, // 10 seconds timeout
-//   greetingTimeout: 5000,
-//   socketTimeout: 10000,
-//   //   family: 4, // Explicitly enforce IPv4 socket connection
-// });
-
 import nodemailer from "nodemailer";
+import type SMTPTransport from "nodemailer/lib/smtp-transport";
 import config from "../config";
 
-export const transporter = nodemailer.createTransport({
-  service: "gmail",
+interface ExtendedSMTPOptions extends SMTPTransport.Options {
+  family?: number; // Exposes Node's net.SocketConnectOpts IPv4/IPv6 flag to TS
+}
+
+const smtpOptions: ExtendedSMTPOptions = {
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
   auth: {
     user: config.smtp_user,
     pass: config.smtp_pass,
   },
-});
+  family: 4, // ⚠️ Enforces IPv4 socket connection on Render
+  connectionTimeout: 10000,
+  greetingTimeout: 5000,
+  socketTimeout: 10000,
+};
+
+export const transporter = nodemailer.createTransport(smtpOptions);
