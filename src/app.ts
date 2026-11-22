@@ -31,9 +31,33 @@ const app: Application = express();
 // app.set("trust proxy", 1);
 
 // Base Middleware
+// app.use(
+//   cors({
+//     origin: config.client_url,
+//     credentials: true,
+//   }),
+// );
+
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+  ...(Array.isArray(config.client_url)
+    ? config.client_url
+    : config.client_url
+      ? config.client_url.split(",").map((u) => u.trim())
+      : []),
+].map((url) => url.replace(/\/$/, ""));
+
 app.use(
   cors({
-    origin: config.client_url,
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      const normalizedOrigin = origin.replace(/\/$/, "");
+      if (allowedOrigins.includes(normalizedOrigin)) {
+        return callback(null, true);
+      }
+      return callback(new Error(`CORS blocked for origin: ${origin}`));
+    },
     credentials: true,
   }),
 );
